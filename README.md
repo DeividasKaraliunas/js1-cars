@@ -1,1 +1,1 @@
-# js1-cars
+# Full stack MERN project
