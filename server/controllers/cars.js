@@ -1,4 +1,5 @@
 const CarModel = require('../models/CarModel')
+const mongoose = require('mongoose')
 
 const getCars = async (req, res) => {
     try {
@@ -30,7 +31,26 @@ const postCar = async (req, res) => {
 }
 
 const deleteCar = async (req, res) => {
-    res.send('Ateityje istrinsiu viena masina');
+    const { id } = req.params;
+    try {
+        if(!mongoose.Types.ObjectId.isValid(id))
+        throw new Error(`Neteisingas id ${id} formatas`)
+        const deletedCar = await CarModel.findByIdAndDelete(id)
+        if (deletedCar === null)
+            throw new Error(`Could'nt find and delete car with id '${id}'`)
+        res.status(200).json({
+            car: {
+                id: deletedCar._id,
+                brand: deletedCar.brand,
+                model: deletedCar.model,
+                year: deletedCar.year,
+                engineVolume: deletedCar.engineVolume
+            }
+        });
+    }
+    catch (error) {
+        res.status(404).json({ message: error.message })
+    }
 }
 
 const updataCar = async (req, res) => {
