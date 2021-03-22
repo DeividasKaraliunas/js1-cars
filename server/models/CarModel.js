@@ -11,15 +11,15 @@ const schema = new mongoose.Schema(
             required:true
         },
         year: {
-            type:Nubmer,
+            type:Number,
             required:true
         },
         engineVolume: {
-            type:Nubmer,
+            type:Number,
             required:true
         }
     },
     { timestamps: true }
 );
 
-export default mongoose.Model('Car', schema)
+module.exports = mongoose.model('Car', schema)
