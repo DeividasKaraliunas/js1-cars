@@ -1,0 +1,8 @@
+.Grid {
+    display              : grid;
+    margin-top           : 100px;
+    width                : 1320px;
+    padding              : 1rem;
+    gap                  : 1rem;
+    grid-template-columns: auto 400px;
+}
