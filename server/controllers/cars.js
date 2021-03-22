@@ -16,10 +16,18 @@ const createPropsToUpdate = (props) => {
     return propsToChange
 }
 
+const formCarResponseModel = (carDocument) => ({
+    id: carDocument._id,
+    brand: carDocument.brand,
+    model: carDocument.model,
+    year: carDocument.year,
+    engineVolume: carDocument.engineVolume
+})
+
 const getCars = async (req, res) => {
     try {
-        const carsFromDB = await CarModel.find();
-        res.status(200).json({ cars: carsFromDB })
+        const carsDocuments = await CarModel.find();
+        res.status(200).json({ cars: carsDocuments.map(formCarResponseModel) })
     }
     catch (error) {
         res.status(404).json({ message: error.message })
@@ -30,15 +38,7 @@ const postCar = async (req, res) => {
     const { brand, model, year, engineVolume } = req.body;
     try {
         const newCar = await CarModel.create({ brand, model, year, engineVolume });
-        res.status(200).json({
-            car: {
-                id: newCar._id,
-                brand: newCar.brand,
-                model: newCar.model,
-                year: newCar.year,
-                engineVolume: newCar.engineVolume
-            }
-        })
+        res.status(200).json({ car: formCarResponseModel(newCar)})
     }
     catch (error) {
         res.status(404).json({ message: error.message })
@@ -53,15 +53,7 @@ const deleteCar = async (req, res) => {
         const deletedCar = await CarModel.findByIdAndDelete(id)
         if (deletedCar === null)
             throw new Error(`Could'nt find and delete car with id '${id}'`)
-        res.status(200).json({
-            car: {
-                id: deletedCar._id,
-                brand: deletedCar.brand,
-                model: deletedCar.model,
-                year: deletedCar.year,
-                engineVolume: deletedCar.engineVolume
-            }
-        });
+        res.status(200).json({ car: formCarResponseModel(deletedCar)});
     }
     catch (error) {
         res.status(404).json({ message: error.message })
@@ -79,9 +71,7 @@ const updataCar = async (req, res) => {
         )
         if (updatedCar === null)
             throw new Error(`Nepavyko rasti  ir atnaujinti automobilio su id '${id}'`)
-        res.status(200).json({
-            car: updatedCar
-        })
+        res.status(200).json({ car: formCarResponseModel(updatedCar)})
     }
     catch (error) {
         res.status(404).json({ message: error.message })
